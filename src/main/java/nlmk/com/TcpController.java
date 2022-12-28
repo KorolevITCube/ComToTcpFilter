@@ -26,7 +26,7 @@ public class TcpController implements Runnable{
     public void processResponse(RequestWrapper wrapper){
         byte[] responseLocal = wrapper.getResponse();
         byte[] request = wrapper.getRequest();
-        log.debug("ORIGINAL RESPONSE: " + Util.convertBytesToString(responseLocal));
+        log.info("ORIGINAL RESPONSE: " + Util.convertBytesToString(responseLocal));
         byte masterAddress = request[2];
         int index = IntStream.range(0, responseLocal.length)
                 .filter(i -> masterAddress == responseLocal[i])
@@ -36,10 +36,11 @@ public class TcpController implements Runnable{
             byte[] tempResponse = Arrays.copyOfRange(responseLocal,index,responseLocal.length);
             byte[] repairResponse = new byte[tempResponse.length+1];
             repairResponse[0] = (byte)0xff;
-            IntStream.range(0, tempResponse.length)
-                    .peek(i -> repairResponse[i+1] = responseLocal[i]);
+            for(int i = 0; i < tempResponse.length; i++){
+                repairResponse[i+1] = tempResponse[i];
+            }
             this.response = repairResponse;
-            log.debug("REPAIRED RESPONSE: " + Util.convertBytesToString(repairResponse));
+            log.info("REPAIRED RESPONSE: " + Util.convertBytesToString(repairResponse));
         }else{
             this.response = new byte[10];
         }

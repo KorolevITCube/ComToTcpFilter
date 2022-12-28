@@ -53,13 +53,15 @@ public class Orchestrator {
                             byte[] request = wrapper.getRequest();
                             driver.writeRequest(request);
                             byte[] currentResponse = driver.readResponse();
-                            wrapper.getControllerLink().setResponse(currentResponse);
+                            wrapper.setResponse(currentResponse);
+                            wrapper.getControllerLink().processResponse(wrapper);
                         }
                     } catch (Exception e) {
                         log.error("Work job is fall\n\trequest is: "+Util.convertBytesToString(wrapper.getRequest()));
                         log.error(e.getLocalizedMessage());
                         log.error(e.getMessage());
-                        wrapper.getControllerLink().setResponse(new byte[10]);
+                        wrapper.setResponse(new byte[10]);
+                        wrapper.getControllerLink().processResponse(wrapper);
                     }
                 }
             }

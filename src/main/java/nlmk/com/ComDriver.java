@@ -28,10 +28,10 @@ public class ComDriver {
     private String portDescriptor = "COM9";
 
     // тайм-аут чтения
-    private final int readTimeOut = 5000;
+    private final int readTimeOut = 200;
 
     // тайм-аут записи
-    private final int writeTimeOut = 1000;
+    private final int writeTimeOut = 200;
 
     // порт
     private SerialPort serialPort;

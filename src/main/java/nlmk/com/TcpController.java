@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class TcpController implements Runnable{
     private Long timeOut = 6000L;
@@ -22,8 +23,26 @@ public class TcpController implements Runnable{
         orchestrator = Orchestrator.getInstance();
     }
 
-    public void setResponse(byte[] response){
-        this.response = response;
+    public void processResponse(RequestWrapper wrapper){
+        byte[] responseLocal = wrapper.getResponse();
+        byte[] request = wrapper.getRequest();
+        log.debug("ORIGINAL RESPONSE: " + Util.convertBytesToString(responseLocal));
+        byte masterAddress = request[2];
+        int index = IntStream.range(0, responseLocal.length)
+                .filter(i -> masterAddress == responseLocal[i])
+                .findFirst()
+                .orElse(-1);
+        if(index != -1){
+            byte[] tempResponse = Arrays.copyOfRange(responseLocal,index,responseLocal.length);
+            byte[] repairResponse = new byte[tempResponse.length+1];
+            repairResponse[0] = (byte)0xff;
+            IntStream.range(0, tempResponse.length)
+                    .peek(i -> repairResponse[i+1] = responseLocal[i]);
+            this.response = repairResponse;
+            log.debug("REPAIRED RESPONSE: " + Util.convertBytesToString(repairResponse));
+        }else{
+            this.response = new byte[10];
+        }
     }
 
     @Override

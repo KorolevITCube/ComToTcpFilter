@@ -78,7 +78,7 @@ public class ComDriver {
     public synchronized void writeRequest(byte[] request) throws IOException {
         if (serialPort.isOpen()) {
             getOutputStream().write(request, 0, request.length);
-            log.info("Request was send: "+request.toString());
+            log.info("Request was send: "+Util.convertBytesToString(request));
         } else {
             log.error("Can't send request, serial port was unexpectedly closed");
             throw new IOException("the serial port was unexpectedly closed");
@@ -99,7 +99,7 @@ public class ComDriver {
                 counter++;
             } while (current != 0x03);
             result = Arrays.copyOfRange(buffer, 0, counter);
-            log.info("received array: "+result.toString());
+            log.info("received array: "+Util.convertBytesToString(result));
             return result;
         } catch (Exception e) {
             log.error("Cant read data from input stream" + e.getCause());

@@ -60,8 +60,8 @@ public class Orchestrator {
                         log.error("Work job is fall\n\trequest is: "+Util.convertBytesToString(wrapper.getRequest()));
                         log.error(e.getLocalizedMessage());
                         log.error(e.getMessage());
-                        wrapper.setResponse(new byte[10]);
-                        wrapper.getControllerLink().processResponse(wrapper);
+                        //wrapper.setResponse(new byte[10]);
+                        //wrapper.getControllerLink().processResponse(wrapper);
                     }
                 }
             }
